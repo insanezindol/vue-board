@@ -128,17 +128,3 @@ npm run unit
 
 - 개별 게시글의 상세 정보 표시
 - 수정 및 삭제 기능 제공
-
-## 🤝 기여하기
-
-1. 이 저장소를 포크합니다
-2. 새로운 기능 브랜치를 생성합니다 (`git checkout -b feature/AmazingFeature`)
-3. 변경사항을 커밋합니다 (`git commit -m 'Add some AmazingFeature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/AmazingFeature`)
-5. Pull Request를 생성합니다
-
-## 📄 라이선스
-
-이 프로젝트는 개인 프로젝트로 제작되었습니다.
-
-**Note**: 이 프로젝트는 Vue.js 학습 및 연습을 위한 기본적인 게시판 애플리케이션입니다.
