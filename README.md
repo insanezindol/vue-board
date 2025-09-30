@@ -141,10 +141,4 @@ npm run unit
 
 이 프로젝트는 개인 프로젝트로 제작되었습니다.
 
-## 👨‍💻 작성자
-
-**딘** - [jhlee@lunasoft.co.kr](mailto:jhlee@lunasoft.co.kr)
-
----
-
 **Note**: 이 프로젝트는 Vue.js 학습 및 연습을 위한 기본적인 게시판 애플리케이션입니다.
