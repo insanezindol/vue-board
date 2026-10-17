@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* 한국 시장 관례: 상승/매수 = 빨강, 하락/매도 = 파랑 */
+@theme {
+  --color-ink-950: #04060b;
+  --color-ink-900: #080c16;
+  --color-ink-800: #0e1424;
+  --color-ink-700: #172036;
+  --color-up: #ff3b5c;
+  --color-down: #3b8bff;
+  --color-hold: #f5c542;
+  --color-neon: #00f0c0;
+
+  --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "D2Coding", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --animate-ticker: ticker 50s linear infinite;
+  --animate-grid: grid-move 3s linear infinite;
+  --animate-orb: orb 18s ease-in-out infinite alternate;
+  --animate-scan: scan 8s linear infinite;
+  --animate-shine: shine 4s ease-in-out infinite;
+  --animate-rise: rise 0.7s cubic-bezier(.2, .8, .2, 1) both;
+  --animate-flash-up: flash-up 1s ease-out;
+  --animate-flash-down: flash-down 1s ease-out;
+  --animate-pulse-dot: pulse-dot 1.6s ease-out infinite;
+  --animate-reveal: reveal 1.6s cubic-bezier(.4, 0, .2, 1) both;
+  --animate-border-spin: border-spin 4s linear infinite;
+
+  @keyframes ticker { to { transform: translateX(-50%); } }
+  @keyframes grid-move { to { background-position: 0 56px, 56px 0; } }
+  @keyframes orb {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(8vw, -6vh) scale(1.15); }
+    100% { transform: translate(-6vw, 8vh) scale(0.9); }
+  }
+  @keyframes scan { from { transform: translateY(-20vh); } to { transform: translateY(120vh); } }
+  @keyframes shine { 0%, 50% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
+  @keyframes flash-up {
+    from { background-color: color-mix(in oklab, var(--color-up) 50%, transparent); box-shadow: 0 0 18px var(--color-up); }
+  }
+  @keyframes flash-down {
+    from { background-color: color-mix(in oklab, var(--color-down) 50%, transparent); box-shadow: 0 0 18px var(--color-down); }
+  }
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 70%, transparent); }
+    100% { box-shadow: 0 0 0 10px transparent; }
+  }
+  @keyframes reveal { from { clip-path: inset(-10% 100% -10% 0); } to { clip-path: inset(-10% -10% -10% 0); } }
+  @keyframes border-spin { to { --angle: 360deg; } }
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@layer base {
+  html { background: var(--color-ink-950); color-scheme: dark; }
+  body { @apply min-h-screen bg-ink-950 font-sans text-slate-200 antialiased; }
+  ::selection { background: color-mix(in oklab, var(--color-neon) 35%, transparent); }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink-950); }
+  ::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 999px; }
+}
+
+/* 유리 질감 패널 + 마우스를 따라다니는 하이라이트 */
+@utility glass {
+  @apply relative rounded-2xl border border-white/10 bg-ink-900/60 backdrop-blur-xl;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 60px -24px rgb(0 0 0 / 0.9),
+    0 0 50px -16px color-mix(in oklab, var(--color-neon) 22%, transparent);
+  background-image: radial-gradient(500px circle at var(--mx, -999px) var(--my, -999px),
+    color-mix(in oklab, var(--color-neon) 7%, transparent), transparent 40%);
+  background-attachment: fixed;
+}
+
+/* 회전하는 네온 테두리 */
+@utility glow-border {
+  &::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 z-10 rounded-[inherit] animate-border-spin;
+    padding: 1px;
+    background: conic-gradient(from var(--angle), transparent 0 60%, var(--color-neon), var(--color-up), transparent 100%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+}
+
+@utility neon-text {
+  text-shadow: 0 0 8px color-mix(in oklab, var(--color-neon) 70%, transparent),
+    0 0 28px color-mix(in oklab, var(--color-neon) 40%, transparent);
+}
+
+@utility shine-text {
+  @apply bg-clip-text text-transparent animate-shine;
+  background-image: linear-gradient(110deg, #f1f5f9 35%, var(--color-neon) 48%, #ff6b88 54%, #f1f5f9 65%);
+  background-size: 200% 100%;
+}
+
+@utility field {
+  @apply w-full rounded-xl border border-white/10 bg-ink-950/70 px-4 py-3 text-slate-100
+    placeholder:text-slate-500 outline-none transition duration-300;
+  &:focus {
+    @apply border-neon/70 bg-ink-950;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-neon) 15%, transparent), 0 0 28px -4px var(--color-neon);
+  }
+}
+
+@utility btn {
+  @apply relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl px-5 py-2.5
+    text-sm font-bold tracking-wide transition duration-300 active:scale-95;
+  &::after {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/35 to-transparent
+      transition-transform duration-700;
+  }
+  &:hover::after { @apply translate-x-full; }
+}
+
+@utility btn-primary {
+  @apply btn bg-linear-to-r from-neon to-cyan-400 text-ink-950 hover:-translate-y-0.5;
+  box-shadow: 0 0 24px -4px var(--color-neon);
+  &:hover { box-shadow: 0 0 44px -2px var(--color-neon); }
+}
+
+@utility btn-ghost {
+  @apply btn border border-white/15 bg-white/5 text-slate-200 hover:border-white/40 hover:bg-white/10;
+}
+
+@utility btn-danger {
+  @apply btn border border-down/50 bg-down/10 text-down hover:bg-down/20;
+  &:hover { box-shadow: 0 0 30px -6px var(--color-down); }
+}
+
+/* 페이지 전환 */
+.page-enter-active, .page-leave-active { transition: opacity .35s ease, transform .35s ease, filter .35s ease; }
+.page-enter-from { opacity: 0; transform: translateY(18px) scale(.985); filter: blur(8px); }
+.page-leave-to { opacity: 0; transform: translateY(-10px) scale(1.01); filter: blur(8px); }
+
+/* 동작 줄이기 설정을 켠 사용자에게는 애니메이션 최소화 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
